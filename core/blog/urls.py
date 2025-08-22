@@ -13,5 +13,6 @@ urlpatterns = [
         RedirectView.as_view(pattern_name='blog:fbv-index'),
         name='redirect-to-index'
     ),
-    path('post', views.PostList.as_view(), name='view for listing posts')
+    path('post/', views.PostListView.as_view(), name='post-list'),
+    path('post/<int:id>', views.PostDetailView.as_view(), name='post-detail')
 ]
