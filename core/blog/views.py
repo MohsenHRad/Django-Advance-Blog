@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, RedirectView, ListView
+from django.views.generic import TemplateView, RedirectView, ListView, DetailView
 
 from .models import Post
 
@@ -45,5 +45,19 @@ class RedirectToDjango(RedirectView):
         return super().get_redirect_url(*args, **kwargs)
 
 
-class PostList(ListView):
+class PostListView(ListView):
+    # queryset = Post.objects.all()
+    model = Post
+    context_object_name = 'posts'
+    paginate_by = 2
+    ordering = '-id'
+
+    # def get_queryset(self):
+    #     posts = Post.objects.filter(status=True)
+    #     return posts
+    # queryset = super().get_queryset()
+    # return queryset.filter(status=True)
+
+
+class PostDetailView(DetailView):
     model = Post
