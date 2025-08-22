@@ -14,5 +14,5 @@ urlpatterns = [
         name='redirect-to-index'
     ),
     path('post/', views.PostListView.as_view(), name='post-list'),
-    path('post/<int:id>', views.PostDetailView.as_view(), name='post-detail')
+    path('post/<int:pk>/', views.PostDetailView.as_view(), name='post-detail')
 ]
