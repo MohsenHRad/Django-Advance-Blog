@@ -1,6 +1,8 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, RedirectView, ListView, DetailView
+from django.views.generic import TemplateView, RedirectView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from .forms import PostForm
 from .models import Post
 
 # Function Base View show a template
@@ -45,11 +47,12 @@ class RedirectToDjango(RedirectView):
         return super().get_redirect_url(*args, **kwargs)
 
 
-class PostListView(ListView):
+class PostListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
     # queryset = Post.objects.all()
+    permission_required = 'blog.view_post'
     model = Post
     context_object_name = 'posts'
-    paginate_by = 3
+    paginate_by = 10
     ordering = 'id'
 
     # def get_queryset(self):
@@ -59,6 +62,40 @@ class PostListView(ListView):
     # return queryset.filter(status=True)
 
 
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
 
+
+'''class PostCreateView(FormView):
+    template_name = 'blog/contact.html'
+    form_class = PostForm
+    success_url = '/blog/post/'
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+'''
+
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = PostForm
+    # fields = ['author', 'title', 'content', 'status', 'category', 'published_date']
+    # fields = '__all__'
+    success_url = '/blog/post/'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+
+class PostEditView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    permission_required = 'blog.change_post'
+    model = Post
+    form_class = PostForm
+    success_url = '/blog/post/'
+
+
+class PostDeleteView(LoginRequiredMixin, DeleteView):
+    model = Post
+    success_url = '/blog/post/'
