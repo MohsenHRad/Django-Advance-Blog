@@ -59,6 +59,7 @@ class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
+    description = models.TextField(max_length=400, null=True, blank=True)
     image = models.ImageField(null=True, blank=True)
 
     created_date = models.DateTimeField(auto_now_add=True)

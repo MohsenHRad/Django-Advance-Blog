@@ -9,7 +9,7 @@ services:
       - ./core:/app
 
     ports:
-      - "8000:8000"
+      - "9000:8000"
     environment:
       - SECRET_KEY=test
       - DEBUG=True
