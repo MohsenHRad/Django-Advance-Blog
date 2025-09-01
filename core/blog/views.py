@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, RedirectView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from .forms import PostForm
 from .models import Post
@@ -99,3 +101,8 @@ class PostEditView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = '/blog/post/'
+
+
+@api_view()
+def api_post_list_view(request):
+    return Response({'name':'mohsen'})
