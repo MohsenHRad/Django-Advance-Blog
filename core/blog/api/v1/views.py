@@ -6,11 +6,17 @@ from .serializers import PostSerializer, PostModelSerializer
 from ...models import Post
 
 
-@api_view()
+@api_view(['GET','POST'])
 def postList(request):
-    posts = Post.objects.filter(status=True)
-    serializer = PostModelSerializer(posts, many=True)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        posts = Post.objects.filter(status=True)
+        serializer = PostModelSerializer(posts, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = PostModelSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 @api_view()
