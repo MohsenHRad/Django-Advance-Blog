@@ -13,7 +13,7 @@ class PostList(APIView):
     """
     Retrieving a list of Posts and Creating a new post
     """
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         """ Retrieving a list of Posts """
         posts = Post.objects.filter(status=True)
