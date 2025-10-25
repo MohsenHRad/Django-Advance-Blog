@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .serializers import PostModelSerializer, CategorySerializer
+from .permissions import IsOwnerOrReadOnly
 from ...models import Post, Category
 
 
@@ -12,7 +13,7 @@ class PostList(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
     """
     Retrieving a list of Posts and Creating a new post
     """
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
     serializer_class = PostModelSerializer
     queryset = Post.objects.filter(status=True)
 
@@ -30,7 +31,7 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
 
 
 class PostModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]
     serializer_class = PostModelSerializer
     queryset = Post.objects.filter(status=True)
 
