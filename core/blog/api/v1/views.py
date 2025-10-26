@@ -6,6 +6,7 @@ from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIVi
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
+from .pagination import LargeResultSetPagination
 from .permissions import IsOwnerOrReadOnly
 from .serializers import PostModelSerializer, CategorySerializer
 from ...models import Post, Category
@@ -40,6 +41,7 @@ class PostModelViewSet(viewsets.ModelViewSet):
     filterset_fields = ['category', 'author', 'status']
     search_fields = ['=title']
     ordering_fields = ['published_date']
+    pagination_class = LargeResultSetPagination
 
     @action(methods=['get'], detail=False)
     def get_Ok(self, request):
