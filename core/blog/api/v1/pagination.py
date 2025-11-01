@@ -3,7 +3,7 @@ from rest_framework.response import Response
 
 
 class LargeResultSetPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 1
 
     def get_paginated_response(self, data):
         return Response({
@@ -12,5 +12,6 @@ class LargeResultSetPagination(PageNumberPagination):
                 'previous': self.get_previous_link()
             },
             'total_objects': self.page.paginator.count,
+            'total_pages':self.page.paginator.num_pages,
             'results': data
         })
