@@ -3,7 +3,7 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 
 from .pagination import LargeResultSetPagination
@@ -34,11 +34,11 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
 
 
 class PostModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = PostModelSerializer
     queryset = Post.objects.filter(status=True)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = {'category': ['exact','in'], 'author': ['exact'], 'status': ['exact']}
+    filterset_fields = {'category': ['exact', 'in'], 'author': ['exact'], 'status': ['exact']}
     search_fields = ['=title']
     ordering_fields = ['published_date']
     pagination_class = LargeResultSetPagination
