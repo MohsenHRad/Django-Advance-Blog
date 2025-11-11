@@ -3,6 +3,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from accounts.models import User
 
@@ -65,3 +66,12 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+
+class CustomTokenObtainSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        validated_data = super().validate(attrs)
+        validated_data['email'] = self.user.email
+        validated_data['id'] = self.user.pk
+        print(validated_data)
+        return validated_data
