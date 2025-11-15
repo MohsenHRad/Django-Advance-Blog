@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from accounts.models import User
+from accounts.models import User, Profile
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -60,6 +60,9 @@ class CustomAuthTokenSerializer(serializers.Serializer):
             if not user:
                 msg = _('Unable to log in with provided credentials.')
                 raise serializers.ValidationError(msg, code='authorization')
+            if not user.is_verified:
+                raise serializers.ValidationError({'detail': 'user is not verified'})
+
         else:
             msg = _('Must include "username" and "password".')
             raise serializers.ValidationError(msg, code='authorization')
@@ -71,9 +74,10 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 class CustomTokenObtainSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         validated_data = super().validate(attrs)
+        if not self.user.is_verified:
+            raise serializers.ValidationError({'detail': 'user is not verified'})
         validated_data['email'] = self.user.email
         validated_data['id'] = self.user.pk
-        print(validated_data)
         return validated_data
 
 
@@ -92,3 +96,12 @@ class ChangePasswordSerializer(serializers.Serializer):
         except exceptions.ValidationError as e:
             raise serializers.ValidationError({'new_password': list(e.messages)})
         return super().validate(attrs)
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(source='user.email', read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ['id', 'email', 'first_name', 'last_name', 'image', 'description']
+        read_only_fields = ['email']
