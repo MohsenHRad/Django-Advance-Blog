@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
-from accounts.models import Profile
+from accounts.models.profiles import Profile
 
 
 # getting user model object
