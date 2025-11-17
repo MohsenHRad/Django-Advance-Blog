@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from mail_templated import EmailMessage
+from mail_templated import send_mail
 from rest_framework import generics, status
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -10,9 +12,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import RegistrationSerializer, CustomAuthTokenSerializer, CustomTokenObtainSerializer, \
     ChangePasswordSerializer, ProfileSerializer
+from .utils import EmailThread
 from ...models import Profile
 
 User = get_user_model()
+
 
 
 class RegistrationApiView(generics.GenericAPIView):
@@ -88,3 +92,12 @@ class ProfileApiView(generics.RetrieveUpdateAPIView):
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset, user=self.request.user)
         return obj
+
+
+class TestEmailSend(generics.GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        email_obj = EmailMessage('email/hello.tpl', {'name': 'mohsen'}, 'admin@test.com', to=['mohsen@test.com'])
+        EmailThread(email_obj).start()
+
+        return Response('email sent')
