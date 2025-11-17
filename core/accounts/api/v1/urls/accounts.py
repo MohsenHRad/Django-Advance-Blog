@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from .. import views
+from ..views import TestEmailSend
 
 # from rest_framework.authtoken.views import ObtainAuthToken
 
@@ -13,9 +14,11 @@ urlpatterns = [
     # registration
     path('registration/', views.RegistrationApiView.as_view(), name='registration'),
 
+    path('test-email',TestEmailSend.as_view(),name='test-email'),
     # activation
-
+    # path('activation/confirm/')
     # resend activation
+    # path('activation/resend/')
 
     # change password
     path('change-password/', views.ChangePasswordApiView.as_view(), name='change-password'),
