@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'drf_yasg',
+    'mail_templated',
     # internal apps
     'accounts',
     'blog'
@@ -153,3 +154,16 @@ REST_FRAMEWORK = {
 
     ]
 }
+
+# email configuration
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# Source - https://stackoverflow.com/a
+# Posted by Ghasem, modified by community. See post 'Timeline' for change history
+# Retrieved 2025-11-16, License - CC BY-SA 4.0
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = False
+EMAIL_HOST = 'smtp4dev'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 25
