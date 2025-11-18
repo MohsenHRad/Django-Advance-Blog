@@ -8,6 +8,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import RegistrationSerializer, CustomAuthTokenSerializer, CustomTokenObtainSerializer, \
@@ -16,7 +18,6 @@ from .utils import EmailThread
 from ...models import Profile
 
 User = get_user_model()
-
 
 
 class RegistrationApiView(generics.GenericAPIView):
@@ -97,7 +98,19 @@ class ProfileApiView(generics.RetrieveUpdateAPIView):
 class TestEmailSend(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
-        email_obj = EmailMessage('email/hello.tpl', {'name': 'mohsen'}, 'admin@test.com', to=['mohsen@test.com'])
+        self.email = 'admin@mohsen.com'
+        user_obj = get_object_or_404(User, email=self.email)
+        token = self.get_tokens_for_user(user_obj)
+
+        email_obj = EmailMessage('email/hello.tpl', {'token': token}, 'mohsen@admin.com', to=[self.email])
         EmailThread(email_obj).start()
 
         return Response('email sent')
+
+    def get_tokens_for_user(self, user):
+        if not user.is_active:
+            raise AuthenticationFailed("User is not active")
+
+        refresh = RefreshToken.for_user(user)
+
+        return str(refresh.access_token)
