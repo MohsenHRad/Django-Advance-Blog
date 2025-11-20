@@ -2,7 +2,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    GenericAPIView,
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 
@@ -16,6 +21,7 @@ class PostList(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
     """
     Retrieving a list of Posts and Creating a new post
     """
+
     permission_classes = [IsOwnerOrReadOnly]
     serializer_class = PostModelSerializer
     queryset = Post.objects.filter(status=True)
@@ -38,14 +44,18 @@ class PostModelViewSet(viewsets.ModelViewSet):
     serializer_class = PostModelSerializer
     queryset = Post.objects.filter(status=True)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = {'category': ['exact', 'in'], 'author': ['exact'], 'status': ['exact']}
-    search_fields = ['=title']
-    ordering_fields = ['published_date']
+    filterset_fields = {
+        "category": ["exact", "in"],
+        "author": ["exact"],
+        "status": ["exact"],
+    }
+    search_fields = ["=title"]
+    ordering_fields = ["published_date"]
     pagination_class = LargeResultSetPagination
 
-    @action(methods=['get'], detail=False)
+    @action(methods=["get"], detail=False)
     def get_Ok(self, request):
-        return Response({'detail': 'Every thing is OK'})
+        return Response({"detail": "Every thing is OK"})
 
 
 class CategoryModelViewSet(viewsets.ModelViewSet):

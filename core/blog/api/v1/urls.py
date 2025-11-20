@@ -2,11 +2,11 @@ from rest_framework.routers import DefaultRouter
 
 from . import views
 
-app_name = 'api-v1'
+app_name = "api-v1"
 
 router = DefaultRouter()
-router.register(r'post', views.PostModelViewSet, basename='post')
-router.register(r'category', views.CategoryModelViewSet, basename='category')
+router.register(r"post", views.PostModelViewSet, basename="post")
+router.register(r"category", views.CategoryModelViewSet, basename="category")
 urlpatterns = router.urls
 
 # urlpatterns = [

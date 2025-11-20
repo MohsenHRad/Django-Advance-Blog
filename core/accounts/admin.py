@@ -6,52 +6,26 @@ from .models import User, Profile
 
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ('email', 'is_superuser', 'is_active','is_verified')
-    list_filter = ('email', 'is_superuser', 'is_active','is_verified')
-    search_fields = ('email',)
-    ordering = ('email',)
+    list_display = ("email", "is_superuser", "is_active", "is_verified")
+    list_filter = ("email", "is_superuser", "is_active", "is_verified")
+    search_fields = ("email",)
+    ordering = ("email",)
     fieldsets = (
+        ("Authentication", {"fields": ["email", "password"]}),
         (
-            'Authentication', {
-            'fields': ['email', 'password']
-        }
+            "Permissions",
+            {"fields": ["is_active", "is_staff", "is_superuser", "is_verified"]},
         ),
-        (
-            'Permissions', {
-            'fields': ['is_active', 'is_staff', 'is_superuser', 'is_verified']
-        }
-        ),
-        (
-            'Group Permissions', {
-            'fields': [
-                'groups', 'user_permissions'
-            ]
-        }
-        )
+        ("Group Permissions", {"fields": ["groups", "user_permissions"]}),
     )
 
     add_fieldsets = (
         (
-            'Authentication', {
-            'fields': [
-                'email', 'password1', 'password2','is_verified'
-            ]
-        }
+            "Authentication",
+            {"fields": ["email", "password1", "password2", "is_verified"]},
         ),
-        (
-            'Permissions', {
-            'fields': [
-                'is_active', 'is_staff', 'is_superuser'
-            ]
-        }
-        ),
-        (
-            'Important Dates', {
-            'fields': [
-                'last_login'
-            ]
-        }
-        )
+        ("Permissions", {"fields": ["is_active", "is_staff", "is_superuser"]}),
+        ("Important Dates", {"fields": ["last_login"]}),
     )
 
 
