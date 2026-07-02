@@ -8,7 +8,10 @@ from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
 )
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import (
+    IsAuthenticatedOrReadOnly,
+    IsAuthenticated,
+)
 from rest_framework.response import Response
 
 from .pagination import LargeResultSetPagination
@@ -17,7 +20,9 @@ from .serializers import PostModelSerializer, CategorySerializer
 from ...models import Post, Category
 
 
-class PostList(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+class PostList(
+    GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
+):
     """
     Retrieving a list of Posts and Creating a new post
     """
