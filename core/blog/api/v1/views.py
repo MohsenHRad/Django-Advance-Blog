@@ -1,6 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, serializers
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import (
     GenericAPIView,
@@ -10,10 +11,10 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
-    IsAuthenticated,
 )
 from rest_framework.response import Response
 
+from accounts.models import Profile
 from .pagination import LargeResultSetPagination
 from .permissions import IsOwnerOrReadOnly
 from .serializers import PostModelSerializer, CategorySerializer
@@ -45,7 +46,7 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
 
 
 class PostModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostModelSerializer
     queryset = Post.objects.filter(status=True)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -57,6 +58,24 @@ class PostModelViewSet(viewsets.ModelViewSet):
     search_fields = ["=title"]
     ordering_fields = ["published_date"]
     pagination_class = LargeResultSetPagination
+
+    def create(self, request, *args, **kwargs):
+        print("USER:", request.user)
+        print("IS AUTH:", request.user.is_authenticated)
+        return super().create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        # این خط خیلی مهم است → اگر کاربر لاگین نبود، 403 یا 401 بده
+        if not self.request.user.is_authenticated:
+            raise PermissionDenied("Authentication credentials were not provided.")
+
+        # گرفتن پروفایل
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+        except Profile.DoesNotExist:
+            raise serializers.ValidationError({"detail": "No profile found for this user."})
+
+        serializer.save(author=profile)
 
     @action(methods=["get"], detail=False)
     def get_Ok(self, request):

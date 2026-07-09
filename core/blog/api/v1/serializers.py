@@ -61,9 +61,8 @@ class PostModelSerializer(serializers.ModelSerializer):
         return rep
 
     def create(self, validated_data):
-        validated_data["author"] = Profile.objects.get(
-            user__id=self.context.get("request").user.id
-        )
+        request = self.context.get('request')
+        validated_data["author"] = Profile.objects.get(user=request.user)
         return super().create(validated_data)
 
 
