@@ -21,9 +21,7 @@ from .serializers import PostModelSerializer, CategorySerializer
 from ...models import Post, Category
 
 
-class PostList(
-    GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
-):
+class PostList(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
     """
     Retrieving a list of Posts and Creating a new post
     """
@@ -73,7 +71,9 @@ class PostModelViewSet(viewsets.ModelViewSet):
         try:
             profile = Profile.objects.get(user=self.request.user)
         except Profile.DoesNotExist:
-            raise serializers.ValidationError({"detail": "No profile found for this user."})
+            raise serializers.ValidationError(
+                {"detail": "No profile found for this user."}
+            )
 
         serializer.save(author=profile)
 
